@@ -1,7 +1,7 @@
 class SceneManager {
+  Update() {
 
+  }
 }
 
-const sceneManager = new SceneManager();
-
-module.exports = sceneManager;
+module.exports = SceneManager;

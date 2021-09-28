@@ -1,7 +1,7 @@
 class InputManager {
+  Update() {
 
+  }
 }
 
-const inputManager = new InputManager();
-
-module.exports = inputManager;
+module.exports = InputManager;

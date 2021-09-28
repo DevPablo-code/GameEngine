@@ -1,7 +1,7 @@
 class RenderManager {
+  Update() {
 
+  }
 }
 
-const renderManager = new RenderManager();
-
-module.exports = renderManager;
+module.exports = RenderManager;

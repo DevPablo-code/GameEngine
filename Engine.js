@@ -1,14 +1,17 @@
-const inputMaganer = require('./Managers/InputManager.js');
-const renderManager = require('./Managers/RenderManager.js');
-const sceneManager = require('./Managers/SceneManager.js');
+const InputManager = require('./Managers/InputManager');
+const SceneManager = require('./Managers/SceneManager');
+const RenderManager = require('./Managers/RenderManager');
 
-const Update = () => {
+class Engine {
+  inputManager = new InputManager();
+  renderManager = new RenderManager();
+  sceneManager = new SceneManager();
 
+  Update() {
+    this.inputManager.Update();
+    this.sceneManager.Update();
+    this.renderManager.Update();
+  }
 }
 
-module.exports = {
-  inputMaganer,
-  renderManager,
-  sceneManager,
-  Update,
-}
+module.exports = Engine;
