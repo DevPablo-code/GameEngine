@@ -8,7 +8,8 @@ class RenderManager {
   }
 
   draw(target) {
-
+    this.context.fillStyle = 'black';
+    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   setup() {

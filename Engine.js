@@ -8,7 +8,7 @@ class Engine {
   sceneManager = new SceneManager();  
 
   setup() {
-
+    this.renderManager.setup();
   }
 
   run(callback) {
