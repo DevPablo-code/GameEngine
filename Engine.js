@@ -5,12 +5,19 @@ const RenderManager = require('./Managers/RenderManager');
 class Engine {
   inputManager = new InputManager();
   renderManager = new RenderManager();
-  sceneManager = new SceneManager();
+  sceneManager = new SceneManager();  
 
-  Update() {
-    this.inputManager.Update();
-    this.sceneManager.Update();
-    this.renderManager.Update();
+  setup() {
+
+  }
+
+  run(callback) {
+    while(true) {
+      this.inputManager.update();
+      callback();
+      this.sceneManager.update();
+      this.renderManager.update();
+    }
   }
 }
 

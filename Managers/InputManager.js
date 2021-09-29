@@ -1,5 +1,5 @@
 class InputManager {
-  Update() {
+  update() {
 
   }
 }
