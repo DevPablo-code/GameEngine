@@ -1,0 +1,1 @@
+browserify main.js > mainc.js

@@ -7,9 +7,8 @@ class RenderManager {
     this.renderTargets.push(target);
   }
 
-  draw(target) {
-    this.context.fillStyle = 'black';
-    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+  draw(target) {  
+    
   }
 
   setup() {

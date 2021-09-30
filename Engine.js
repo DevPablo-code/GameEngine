@@ -12,12 +12,12 @@ class Engine {
   }
 
   run(callback) {
-    while(true) {
+    setInterval(() => {
       this.inputManager.update();
       callback();
       this.sceneManager.update();
       this.renderManager.update();
-    }
+    }, 1)
   }
 }
 
