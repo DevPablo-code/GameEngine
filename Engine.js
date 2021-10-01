@@ -1,6 +1,6 @@
 const InputManager = require('./Managers/InputManager');
 const SceneManager = require('./Managers/SceneManager');
-const RenderManager = require('./Managers/RenderManager');
+const { RenderManager } = require('./Managers/RenderManager');
 
 class Engine {
   inputManager = new InputManager();
@@ -14,8 +14,10 @@ class Engine {
   run(callback) {
     setInterval(() => {
       this.inputManager.update();
-      callback();
       this.sceneManager.update();
+
+      callback();
+
       this.renderManager.update();
     }, 1)
   }

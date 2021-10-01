@@ -1,19 +1,22 @@
+class RenderTarget {
+  position;
+  size;
+  image;
+
+  constructor() {
+    this.image = new Image();
+  }
+}
+
 class RenderManager {
-  canvas;
+  privatecanvas;
   context;
   renderTargets = [];
-
-  addRenderTarget(target) {
-    this.renderTargets.push(target);
-  }
-
-  draw(target) {  
-    
-  }
-
+  
   setup() {
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
+
     document.body.appendChild(this.canvas);
   }
 
@@ -22,6 +25,14 @@ class RenderManager {
       this.draw(target);
     })
   }
+
+  draw(target) {  
+    this.context.drawImage(target.image, 0, 0);
+  }
+
+  addRenderTarget(target) {
+    this.renderTargets.push(target);
+  }
 }
 
-module.exports = RenderManager;
+module.exports = { RenderManager, RenderTarget };
