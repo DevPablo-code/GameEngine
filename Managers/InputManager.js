@@ -32,11 +32,24 @@ class InputManager {
     })
   }
 
+  wasJustPressed(key) {
+    const info = this.lastInput.get(key);
+    if (!info) {
+      return false;
+    }
+    return info.state === 'pressed';
+  }
+
+  wasJustReleased(key) {
+    const info = this.lastInput.get(key);
+    if (!info) {
+      return false;
+    }
+    return info.state === 'released';
+  }
+
   update() {
     this.lastInput = this.newInput;
-    if (this.lastInput.size != 0) {
-      console.log(this.lastInput)
-    }
     this.newInput = new Map();
   }
 }
