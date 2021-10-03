@@ -5,7 +5,7 @@ const { RenderManager } = require('./Managers/RenderManager');
 class Engine {
   inputManager = new InputManager();
   renderManager = new RenderManager();
-  sceneManager = new SceneManager();  
+  sceneManager = new SceneManager();
 
   setup() {
     this.renderManager.setup();
