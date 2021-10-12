@@ -44,4 +44,4 @@ class SceneManager {
   }
 }
 
-module.exports = SceneManager;
+module.exports = { SceneManager, SceneObject };

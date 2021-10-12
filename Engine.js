@@ -1,5 +1,5 @@
 const InputManager = require('./Managers/InputManager');
-const SceneManager = require('./Managers/SceneManager');
+const { SceneManager } = require('./Managers/SceneManager');
 const { RenderManager } = require('./Managers/RenderManager');
 
 class Engine {
