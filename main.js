@@ -1,15 +1,15 @@
 const Engine = require('./Engine');
+const buildLevelRender = require('./Functions/buildLevelRender');
 const { RenderTarget } = require('./Managers/RenderManager');
 
-const game = new Engine();
+((async () => {
+  const game = new Engine();
 
-var r = new RenderTarget();
-r.setImage('./res/taverntable.png');
-r.setPosition([200, 200]);
-r.setSize([1.0, 1.0]);
+  var r = (await buildLevelRender('./test.yaml'))[0];
 
-game.renderManager.addRenderTarget(r);
+  game.renderManager.addRenderTarget(r);
 
-game.setup();
+  game.setup();
 
-game.run(() => {});
+  game.run(() => {});
+})())

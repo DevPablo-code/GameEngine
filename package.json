@@ -5,6 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "jquery": "^3.6.0",
+    "js-yaml": "^4.1.0",
     "mathjs": "^9.5.0",
     "node": "^16.10.0"
   },
