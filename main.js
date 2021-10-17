@@ -5,7 +5,11 @@ const { RenderTarget } = require('./Managers/RenderManager');
 ((async () => {
   const game = new Engine();
 
-  var r = (await buildLevelRender('./test.yaml'))[0];
+  const testObjectFile = game.assetsManager.addAsset('test.yaml');
+
+  await game.assetsManager.loadAssets();
+
+  var r = (await buildLevelRender(game.assetsManager.getAsset(testObjectFile)))[0];
 
   game.renderManager.addRenderTarget(r);
 

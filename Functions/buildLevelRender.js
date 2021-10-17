@@ -1,11 +1,9 @@
 const YAML = require('js-yaml');
 const { RenderTarget } = require('../Managers/RenderManager')
 
-const buildLevelRender = async (path) => {
+const buildLevelRender = async (text) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await fetch(path);
-      const text = await response.text();
       const parsed = YAML.load(text);
       if (parsed.renderObjects && Array.isArray(parsed.renderObjects)) {
            const renderTargets = [];
@@ -17,8 +15,8 @@ const buildLevelRender = async (path) => {
             if (renderObject.size) {
               renderTarget.setSize(renderObject.size);
             }
-            if (renderObject.imagePath) {
-              renderTarget.setImage(renderObject.imagePath);
+            if (renderObject.imagePath) {s
+              renderTarget.setImage(renderObject.imagePath);          
             }
             renderTargets.push(renderTarget);
            })

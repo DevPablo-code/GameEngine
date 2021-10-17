@@ -1,11 +1,13 @@
 const InputManager = require('./Managers/InputManager');
 const { SceneManager } = require('./Managers/SceneManager');
 const { RenderManager } = require('./Managers/RenderManager');
+const AssetsManager = require('./Managers/AssetsManager');
 
 class Engine {
   inputManager = new InputManager();
   renderManager = new RenderManager();
   sceneManager = new SceneManager();
+  assetsManager = new AssetsManager();
 
   setup() {
     this.renderManager.setup();
