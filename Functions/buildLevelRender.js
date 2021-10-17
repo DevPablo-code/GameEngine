@@ -15,8 +15,11 @@ const buildLevelRender = async (text) => {
             if (renderObject.size) {
               renderTarget.setSize(renderObject.size);
             }
-            if (renderObject.imagePath) {s
+            if (renderObject.imagePath) {
               renderTarget.setImage(renderObject.imagePath);          
+            }
+            if (renderObject.mirror) {
+              renderTarget.setMirror(renderObject.mirror);
             }
             renderTargets.push(renderTarget);
            })

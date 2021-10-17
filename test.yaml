@@ -1,7 +1,8 @@
 renderObjects: [
   {
-    position: [100, 100],
-    size: [0.5, 0.5],
+    position: [155, 150],
+    size: [1, 1],
+    mirror: [-1, 1],
     imagePath: "./res/taverntable.png",
   }
 ]
