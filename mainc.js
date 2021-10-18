@@ -265,12 +265,21 @@ class RenderManager {
 
   draw(target) {
     this.context.save();
-    const w = target.image.width * target.size[0];
-    const h = target.image.height * target.size[1];
-    const x = target.position[0] - w / 2;
-    const y = target.position[1] - h / 2;
-    this.context.translate(target.mirror[0] == 1 ? target.image.width : 0, target.mirror[1] == 1 ? target.image.height : 0);
-    this.context.scale(target.mirror[0] * -1, target.mirror[1] * -1);
+    let w = target.image.width * target.size[0];
+    let h = target.image.height * target.size[1];
+    let x = target.position[0] - w / 2;
+    let y = target.position[1] - h / 2;
+    let scaleX = 1;
+    let scaleY = 1;
+    if (target.mirror[0] == 1) {
+      scaleX = -1;
+      x = -(x + w);
+    }
+    if (target.mirror[1] == 1) {
+      scaleY = -1;
+      y = -(y + h);
+    }
+    this.context.scale(scaleX, scaleY);
     this.context.drawImage(target.image, 
                            x, y, //Move local coordinates to image center
                            w, h);
