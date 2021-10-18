@@ -44,6 +44,9 @@ const buildLevelRender = async (text) => {
             if (renderObject.position) {
               renderTarget.setPosition(renderObject.position);
             }
+            if (renderObject.rotation) {
+              renderTarget.setRotation(renderObject.rotation);
+            }
             if (renderObject.size) {
               renderTarget.setSize(renderObject.size);
             }
@@ -214,6 +217,7 @@ const math = require('mathjs');
 
 class RenderTarget {
   position;
+  rotation;
   size;
   mirror;
   image;
@@ -221,6 +225,7 @@ class RenderTarget {
   constructor() {
     this.image = new Image();
     this.position = [0, 0];
+    this.rotation = 0;
     this.size = [1, 1];
     this.mirror = [-1, -1];
   }
@@ -231,6 +236,10 @@ class RenderTarget {
 
   setPosition(pos) {
     this.position = pos;
+  }
+
+  setRotation(rotation) {
+    this.rotation = rotation;
   }
 
   setSize(size) {
@@ -264,6 +273,7 @@ class RenderManager {
   }
 
   draw(target) {
+    // this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.save();
     let w = target.image.width * target.size[0];
     let h = target.image.height * target.size[1];
@@ -280,6 +290,11 @@ class RenderManager {
       y = -(y + h);
     }
     this.context.scale(scaleX, scaleY);
+
+    this.context.translate(x + w / 2, y + h / 2);
+    this.context.rotate(target.rotation * Math.PI / 180);
+    this.context.translate(-x - w / 2, -y - h / 2);
+
     this.context.drawImage(target.image, 
                            x, y, //Move local coordinates to image center
                            w, h);

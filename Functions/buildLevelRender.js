@@ -12,6 +12,9 @@ const buildLevelRender = async (text) => {
             if (renderObject.position) {
               renderTarget.setPosition(renderObject.position);
             }
+            if (renderObject.rotation) {
+              renderTarget.setRotation(renderObject.rotation);
+            }
             if (renderObject.size) {
               renderTarget.setSize(renderObject.size);
             }
