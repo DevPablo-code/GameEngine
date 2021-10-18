@@ -52,6 +52,7 @@ class RenderManager {
   }
 
   update() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.renderTargets.forEach((target) => {
       this.draw(target);
     })

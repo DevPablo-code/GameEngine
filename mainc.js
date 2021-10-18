@@ -267,13 +267,13 @@ class RenderManager {
   }
 
   update() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.renderTargets.forEach((target) => {
       this.draw(target);
     })
   }
 
   draw(target) {
-    // this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.save();
     let w = target.image.width * target.size[0];
     let h = target.image.height * target.size[1];
