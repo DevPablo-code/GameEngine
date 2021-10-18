@@ -39,7 +39,7 @@ class RenderTarget {
 class RenderManager {
   canvas;
   context;
-  renderTargets = [];
+  renderTargets = new Map([[0, []]]);
   
   setup() {
     this.canvas = document.createElement('canvas');
@@ -53,9 +53,11 @@ class RenderManager {
 
   update() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.renderTargets.forEach((target) => {
-      this.draw(target);
-    })
+    for (let value of this.renderTargets.values()) {
+      value.forEach((target) => {
+        this.draw(target);
+      })
+    }
   }
 
   draw(target) {
@@ -86,8 +88,24 @@ class RenderManager {
     this.context.restore();
   }
 
-  addRenderTarget(target) {
-    this.renderTargets.push(target);
+  addRenderTarget(target, layer = 0) {
+    this.renderTargets.get(layer).push(target);
+  }
+
+  removeRenderTarget(target, layer = 0) {
+    const layerObjects = this.renderTargets.get(layer);
+    const objectIndex = layerObjects.indexOf(target);
+    if (objectIndex != -1) {
+      layerObjects.splice(objectIndex, 1);
+    }
+  }
+
+  createRenderLayer() {
+    this.renderTargets.set(this.renderTargets.size, []);
+  }
+
+  deleteRenderLayer(layer) {
+    this.renderTargets.delete(layer);
   }
 }
 

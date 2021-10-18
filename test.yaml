@@ -5,5 +5,12 @@ renderObjects: [
     size: [1, 1],
     mirror: [-1, -1],
     imagePath: "./res/taverntable.png",
+  }, 
+  {
+    position: [200, 250],
+    rotation: 90,
+    size: [1, 1],
+    mirror: [-1, -1],
+    imagePath: "./res/tavernposter.png",
   }
 ]

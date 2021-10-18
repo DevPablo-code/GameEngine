@@ -9,9 +9,12 @@ const { RenderTarget } = require('./Managers/RenderManager');
 
   await game.assetsManager.loadAssets();
 
-  var r = (await buildLevelRender(game.assetsManager.getAsset(testObjectFile)))[0];
+  var rs = (await buildLevelRender(game.assetsManager.getAsset(testObjectFile)));
 
-  game.renderManager.addRenderTarget(r);
+  game.renderManager.createRenderLayer();
+
+  game.renderManager.addRenderTarget(rs[0], 0);
+  game.renderManager.addRenderTarget(rs[1], 1);
 
   game.setup();
 
