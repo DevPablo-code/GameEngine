@@ -1,56 +1,94 @@
 const $ = require('jquery');
+const { KeyboardEvent, MouseEvent } = require('./EventsManager');
 
 class InputManager {
-  lastInput = new Map();
-  newInput = new Map();
-
-  constructor() {
-    $(document).on('mousedown', (event) => {
-      this.newInput.set(`mb${event.which}`, {
-        state: 'pressed',
-        position: [event.clientX, event.clientY],
+  constructor(engine) {
+    this.engine = engine; 
+    
+    $(this.engine.renderManager.canvas).on('mousedown touchstart', (event) => {
+      const canvasRect = event.target.getBoundingClientRect();
+      const mouseEvent = new MouseEvent('Button', 'Pressed', {
+        button: event.which,
+        position: [event.clientX - canvasRect.left, event.clientY - canvasRect.top],
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+        altKey: event.altKey,
       })
+      this.engine.eventsManager.emit(mouseEvent);
     })
 
-    $(document).on('mouseup', (event) => {
-      this.newInput.set(`mb${event.which}`, {
-        state: 'released',
-        position: [event.clientX, event.clientY],
+    $(this.engine.renderManager.canvas).on('mouseup touchend', (event) => {
+      const canvasRect = event.target.getBoundingClientRect();
+      const mouseEvent = new MouseEvent('Button', 'Released', {
+        button: event.which,
+        position: [event.clientX - canvasRect.left, event.clientY - canvasRect.top],
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+        altKey: event.altKey,
       })
+      this.engine.eventsManager.emit(mouseEvent);
+    })
+
+    $(this.engine.renderManager.canvas).on('wheel', (event) => {
+      let subcategory = 'Wheel';
+      let action;
+      let args = {
+        position: [event.clientX, event.clientY],
+        delta: [event.originalEvent.deltaX, event.originalEvent.deltaY],
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+        altKey: event.altKey,
+      }
+      if (event.originalEvent.deltaY) {
+        if (event.originalEvent.deltaY > 0) {
+          action = 'ScrollDown';
+        } else {
+          action = 'ScrollUp';
+        }
+      } else {
+        if (event.originalEvent.deltaX > 0) {
+          action = 'ScrollRight';
+        } else {
+          action = 'ScrollLeft';
+        }
+      }
+
+      const mouseEvent = new MouseEvent(subcategory, action, args);
+      this.engine.eventsManager.emit(mouseEvent);
+    })
+
+    $(this.engine.renderManager.canvas).on('mousemove touchmove', (event) => {
+      const mouseEvent = new MouseEvent('Cursor', 'Move', {
+        position: [event.clientX, event.clientY],
+        delta: [event.originalEvent.movementX, event.originalEvent.movementY],
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+        altKey: event.altKey,
+      })
+      this.engine.eventsManager.emit(mouseEvent);
     })
 
     $(document).on('keydown', (event) => {
-      this.newInput.set(event.code.replace('Key',  ''), {
-        state: 'pressed',
+      const keyboardEvent = new KeyboardEvent('Pressed', {
+        keyValue: event.key,
+        keyCode: event.code,
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+        altKey: event.altKey,
       })
+      this.engine.eventsManager.emit(keyboardEvent);
     })
 
     $(document).on('keyup', (event) => {
-      this.newInput.set(event.code.replace('Key',  ''), {
-        state: 'released',
+      const keyboardEvent = new KeyboardEvent('Released', {
+        keyValue: event.key,
+        keyCode: event.code,
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+        altKey: event.altKey,
       })
+      this.engine.eventsManager.emit(keyboardEvent);
     })
-  }
-
-  wasJustPressed(key) {
-    const info = this.lastInput.get(key);
-    if (!info) {
-      return false;
-    }
-    return info.state === 'pressed';
-  }
-
-  wasJustReleased(key) {
-    const info = this.lastInput.get(key);
-    if (!info) {
-      return false;
-    }
-    return info.state === 'released';
-  }
-
-  update() {
-    this.lastInput = this.newInput;
-    this.newInput = new Map();
   }
 }
 

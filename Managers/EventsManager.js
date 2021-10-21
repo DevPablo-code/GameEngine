@@ -39,7 +39,8 @@ class WindowEvent extends Event {
 class EventsManager {   
   events;
 
-  constructor() {
+  constructor(engine) {
+    this.engine = engine;
     this.events = new Map();
   }
 
@@ -63,7 +64,7 @@ class EventsManager {
   }
 
   clearEvents() {
-    this.events.clear();
+    this.events.clear();   
   }
 
   getEventListeners(event) {

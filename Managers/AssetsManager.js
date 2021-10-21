@@ -2,7 +2,8 @@ class AssetsManager {
   assets;
   assetsLoaded;
 
-  constructor() {
+  constructor(engine) {
+    this.engine = engine;
     this.assets = new Map();
     this.assetsLoaded = 0;
   }

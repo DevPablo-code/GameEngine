@@ -1,4 +1,5 @@
 const math = require('mathjs');
+const { WindowEvent, LevelEvent } = require('./EventsManager');
 
 class RenderTarget {
   position;
@@ -40,6 +41,10 @@ class RenderManager {
   canvas;
   context;
   renderTargets = new Map([[0, []]]);
+
+  constructor(engine) {
+    this.engine = engine;
+  }
   
   setup() {
     this.canvas = document.createElement('canvas');
@@ -88,8 +93,28 @@ class RenderManager {
     this.context.restore();
   }
 
+  setCanvasSize(width, height) {
+    const oldWidth = this.canvas.width;
+    const oldHeight = this.canvas.height;
+
+    this.canvas.width = width;
+    this.canvas.height = height;
+
+    const windowEvent = new WindowEvent('Canvas', 'Resized', {
+      oldSize: [oldWidth, oldHeight],
+      newSize: [width, height],
+    });
+
+    this.engine.eventsManager.emit(windowEvent);
+  }
+
   addRenderTarget(target, layer = 0) {
     this.renderTargets.get(layer).push(target);
+    const levelEvent = new LevelEvent('RenderTarget', 'New', {
+      target: target,
+      renderLayer: layer,
+    });
+    this.engine.eventsManager.emit(levelEvent);
   }
 
   removeRenderTarget(target, layer = 0) {
@@ -102,10 +127,14 @@ class RenderManager {
 
   createRenderLayer() {
     this.renderTargets.set(this.renderTargets.size, []);
+    const newRenderLayerEvent = new WindowEvent('RenderLayers', 'Created', {
+      index: this.renderTargets.size - 1,
+    })
+    this.engine.eventsManager.emit(newRenderLayerEvent);
   }
 
-  deleteRenderLayer(layer) {
-    this.renderTargets.delete(layer);
+  deleteRenderLayer() {
+    this.renderTargets.delete(this.renderTargets.size - 1);
   }
 }
 
