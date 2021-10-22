@@ -30,10 +30,11 @@ class InputManager {
     })
 
     $(this.engine.renderManager.canvas).on('wheel', (event) => {
+      const canvasRect = event.target.getBoundingClientRect();
       let subcategory = 'Wheel';
       let action;
       let args = {
-        position: [event.clientX, event.clientY],
+        position: [event.clientX - canvasRect.left, event.clientY - canvasRect.top],
         delta: [event.originalEvent.deltaX, event.originalEvent.deltaY],
         ctrlKey: event.ctrlKey,
         metaKey: event.metaKey,
@@ -58,8 +59,9 @@ class InputManager {
     })
 
     $(this.engine.renderManager.canvas).on('mousemove touchmove', (event) => {
+      const canvasRect = event.target.getBoundingClientRect();
       const mouseEvent = new MouseEvent('Cursor', 'Move', {
-        position: [event.clientX, event.clientY],
+        position: [event.clientX - canvasRect.left, event.clientY - canvasRect.top],
         delta: [event.originalEvent.movementX, event.originalEvent.movementY],
         ctrlKey: event.ctrlKey,
         metaKey: event.metaKey,
