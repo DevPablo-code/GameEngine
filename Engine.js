@@ -5,19 +5,19 @@ const AssetsManager = require('./Managers/AssetsManager');
 const { EventsManager } = require('./Managers/EventsManager');
 
 class Engine {
-  eventsManager = new EventsManager();
-  inputManager = new InputManager();
-  renderManager = new RenderManager();
-  sceneManager = new SceneManager();
-  assetsManager = new AssetsManager();
+  eventsManager = new EventsManager(this);
+  renderManager = new RenderManager(this);
+  sceneManager = new SceneManager(this);
+  assetsManager = new AssetsManager(this);
+  inputManager = new InputManager(this);
 
   setup() {
     this.renderManager.setup();
+    this.animationsManager.setup();
   }
 
   run(callback) {
     setInterval(() => {
-      this.inputManager.update();
       this.sceneManager.update();
 
       callback();
