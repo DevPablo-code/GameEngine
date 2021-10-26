@@ -3,9 +3,11 @@ const { SceneManager } = require('./Managers/SceneManager');
 const { RenderManager } = require('./Managers/RenderManager');
 const AssetsManager = require('./Managers/AssetsManager');
 const { EventsManager } = require('./Managers/EventsManager');
+const { AnimationsManager } = require('./Managers/AnimationsManager');
 
 class Engine {
   eventsManager = new EventsManager(this);
+  animationsManager = new AnimationsManager(this);
   renderManager = new RenderManager(this);
   sceneManager = new SceneManager(this);
   assetsManager = new AssetsManager(this);
