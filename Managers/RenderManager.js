@@ -18,8 +18,12 @@ class RenderTarget {
     this.mirror = [-1, -1];
   }
 
-  setImage(path) {
+  setImagePath(path) {
     this.image.src = path;
+  }
+
+  setImage(image) {
+    this.image = image;
   }
 
   setAnimation(animation) {
