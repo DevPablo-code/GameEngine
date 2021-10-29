@@ -610,7 +610,7 @@ class RenderManager {
 module.exports = { RenderManager, RenderTarget };
 },{"./AnimationsManager":3,"./EventsManager":5}],8:[function(require,module,exports){
 const YAML = require('js-yaml');
-const { RenderTarget } = require('../Managers/RenderManager')
+const { RenderTarget } = require('./RenderManager')
 
 class SceneManager {
   constructor(engine) {
@@ -656,10 +656,10 @@ class SceneManager {
 }
 
 module.exports = { SceneManager };
-},{"../Managers/RenderManager":7,"js-yaml":33}],9:[function(require,module,exports){
-const Engine = require('./Engine');
-const { Animation } = require('./Managers/AnimationsManager');
-const { RenderTarget } = require('./Managers/RenderManager');
+},{"./RenderManager":7,"js-yaml":33}],9:[function(require,module,exports){
+const Engine = require('../Source/Engine');
+const { Animation } = require('../Source/Managers/AnimationsManager');
+const { RenderTarget } = require('../Source/Managers/RenderManager');
 
 ((async () => {
   const game = new Engine();
@@ -692,7 +692,7 @@ const { RenderTarget } = require('./Managers/RenderManager');
     console.log(delta);
   });
 })())
-},{"./Engine":2,"./Managers/AnimationsManager":3,"./Managers/RenderManager":7}],10:[function(require,module,exports){
+},{"../Source/Engine":2,"../Source/Managers/AnimationsManager":3,"../Source/Managers/RenderManager":7}],10:[function(require,module,exports){
 function _arrayLikeToArray(arr, len) {
   if (len == null || len > arr.length) len = arr.length;
 

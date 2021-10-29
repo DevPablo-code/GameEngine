@@ -1,6 +1,6 @@
-const Engine = require('./Engine');
-const { Animation } = require('./Managers/AnimationsManager');
-const { RenderTarget } = require('./Managers/RenderManager');
+const Engine = require('../Source/Engine');
+const { Animation } = require('../Source/Managers/AnimationsManager');
+const { RenderTarget } = require('../Source/Managers/RenderManager');
 
 ((async () => {
   const game = new Engine();

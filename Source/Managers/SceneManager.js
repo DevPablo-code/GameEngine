@@ -1,5 +1,5 @@
 const YAML = require('js-yaml');
-const { RenderTarget } = require('../Managers/RenderManager')
+const { RenderTarget } = require('./RenderManager')
 
 class SceneManager {
   constructor(engine) {
