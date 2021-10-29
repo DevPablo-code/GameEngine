@@ -13,6 +13,8 @@ class Engine {
   assetsManager = new AssetsManager(this);
   inputManager = new InputManager(this);
 
+  lastUpdateTime = 0;
+
   setup() {
     this.renderManager.setup();
     this.animationsManager.setup();
@@ -20,7 +22,11 @@ class Engine {
 
   run(callback) {
     setInterval(() => {
-      callback();
+      let t = Date.now();
+      let delta = (t - this.lastUpdateTime) / 1000;
+      this.lastUpdateTime = Date.now();
+
+      callback(delta);
 
       this.renderManager.update();
     }, 1)

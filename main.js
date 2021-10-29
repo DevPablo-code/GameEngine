@@ -29,5 +29,7 @@ const { RenderTarget } = require('./Managers/RenderManager');
 
   game.setup();
 
-  game.run(() => {});
+  game.run((delta) => {
+    console.log(delta);
+  });
 })())

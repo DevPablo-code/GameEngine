@@ -16,6 +16,8 @@ class Engine {
   assetsManager = new AssetsManager(this);
   inputManager = new InputManager(this);
 
+  lastUpdateTime = 0;
+
   setup() {
     this.renderManager.setup();
     this.animationsManager.setup();
@@ -23,7 +25,11 @@ class Engine {
 
   run(callback) {
     setInterval(() => {
-      callback();
+      let t = Date.now();
+      let delta = (t - this.lastUpdateTime) / 1000;
+      this.lastUpdateTime = Date.now();
+
+      callback(delta);
 
       this.renderManager.update();
     }, 1)
@@ -682,7 +688,9 @@ const { RenderTarget } = require('./Managers/RenderManager');
 
   game.setup();
 
-  game.run(() => {});
+  game.run((delta) => {
+    console.log(delta);
+  });
 })())
 },{"./Engine":2,"./Managers/AnimationsManager":3,"./Managers/RenderManager":7}],10:[function(require,module,exports){
 function _arrayLikeToArray(arr, len) {
