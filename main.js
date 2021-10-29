@@ -1,5 +1,4 @@
 const Engine = require('./Engine');
-const buildLevelRender = require('./Functions/buildLevelRender');
 const { Animation } = require('./Managers/AnimationsManager');
 const { RenderTarget } = require('./Managers/RenderManager');
 
@@ -11,11 +10,15 @@ const { RenderTarget } = require('./Managers/RenderManager');
 
   await game.assetsManager.loadAssets();
 
-  var rs = (await buildLevelRender(game.assetsManager.getAsset(testObjectFile)));
+  var rs = (await game.sceneManager.buildLevelRender(game.assetsManager.getAsset(testObjectFile)));
+
+  game.eventsManager.addListener('Window.RenderLayers.Created', (event) => {
+    console.log(event);
+  })
 
   game.renderManager.createRenderLayer();
 
-  let anim1 = new Animation(game.assetsManager.getAsset(tavernTableAnimation), rs[0].image.width, 1, true);
+  let anim1 = new Animation(game.assetsManager.getAsset(tavernTableAnimation), rs[0].image.width, 120, true, 'normal');
 
   game.animationsManager.addAnimation(anim1);
 

@@ -7,14 +7,30 @@ class Animation {
   frameWidth;
   frameRate;
   animationImage;
+  animationDirection; /* normal, reverse, alternate, alternate-reverse */
+  currentDirection;
 
-  constructor(image = new Image(), frameWidth = 0, frameRate = 30, play = false) {
-    this.currentFrame = 1;
+  constructor(image = new Image(), frameWidth = 0, frameRate = 30, play = false, animationDirection = 'normal') {
     this.nextFrameProgress = 0;
     this.frameWidth = frameWidth;
     this.frameRate = frameRate;
     this.animationImage = image;
     this.playing = play;
+    this.animationDirection = animationDirection;
+    switch (animationDirection) {
+       case 'normal':
+       case'alternate': {
+        this.currentDirection = 'forward';
+        this.currentFrame = 1;
+        break;
+       }
+       case 'reverse':
+       case'alternate-reverse': {
+        this.currentDirection = 'backward';
+        this.currentFrame = this.animationImage.width / this.frameWidth;
+        break;
+       }
+    }
   }
 
   setImage(path) {
@@ -63,10 +79,37 @@ class AnimationsManager {
         if (animation.playing) {
           animation.nextFrameProgress = math.add(math.fraction(animation.nextFrameProgress), math.fraction(animation.frameRate, this.tickRate));
           if (animation.nextFrameProgress.valueOf() >= 1) {
-            if (animation.currentFrame == animation.animationImage.width / animation.frameWidth) {
-              animation.currentFrame = Math.trunc(animation.nextFrameProgress.valueOf());
-            } else {
-              animation.currentFrame += Math.trunc(animation.nextFrameProgress.valueOf());
+            switch (animation.currentDirection) {
+              case 'forward': {
+                for (let i = 0; i < Math.trunc(animation.nextFrameProgress.valueOf()); i++) {
+                  if (animation.currentFrame == animation.animationImage.width / animation.frameWidth) {
+                    if (animation.animationDirection == 'alternate' || animation.animationDirection == 'alternate-reverse') {
+                      animation.currentFrame = animation.animationImage.width / animation.frameWidth - 1;
+                      animation.currentDirection = 'backward';
+                    } else {
+                      animation.currentFrame = 1;
+                    }
+                  } else {
+                    animation.currentFrame += 1;
+                  }
+                }
+                break;
+              }
+              case 'backward': {
+                for (let i = 0; i < Math.trunc(animation.nextFrameProgress.valueOf()); i++) {
+                  if (animation.currentFrame == 1) {
+                    if (animation.animationDirection == 'alternate' || animation.animationDirection == 'alternate-reverse') {
+                      animation.currentFrame = 2;
+                      animation.currentDirection = 'forward';
+                    } else {
+                      animation.currentFrame = animation.animationImage.width / animation.frameWidth;
+                    }
+                  } else {
+                    animation.currentFrame -= 1;
+                  }
+                }
+                break;
+              }
             }
             animation.nextFrameProgress = math.subtract(animation.nextFrameProgress, Math.trunc(animation.nextFrameProgress.valueOf()));
           }

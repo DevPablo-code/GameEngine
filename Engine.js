@@ -20,8 +20,6 @@ class Engine {
 
   run(callback) {
     setInterval(() => {
-      this.sceneManager.update();
-
       callback();
 
       this.renderManager.update();
