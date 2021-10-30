@@ -5,6 +5,13 @@ renderObjects: [
     size: [1, 1],
     mirror: [-1, -1],
     imagePath: "./res/taverntable.png",
+    animation: {
+      imagePath: "./res/taverntableanim.png",
+      frameRate: 1,
+      frameWidth: 310,
+      play: true,
+      direction: 'normal',
+    }
   }, 
   {
     position: [200, 250],

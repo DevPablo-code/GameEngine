@@ -1,4 +1,5 @@
 const YAML = require('js-yaml');
+const { Animation } = require('./AnimationsManager');
 const { RenderTarget } = require('./RenderManager')
 
 class SceneManager {
@@ -24,9 +25,17 @@ class SceneManager {
               }
               if (renderObject.imagePath) {
                 const imageAssetId = this.engine.assetsManager.addAsset(renderObject.imagePath);
-                await this.engine.assetsManager.loadAssets();
+                await this.engine.assetsManager.loadAsset(imageAssetId);
                 const imageAsset = this.engine.assetsManager.getAsset(imageAssetId);
                 renderTarget.setImage(imageAsset);          
+              }
+              if (renderObject.animation) {
+                const animationImageAssetId = this.engine.assetsManager.addAsset(renderObject.animation.imagePath);
+                await this.engine.assetsManager.loadAsset(animationImageAssetId);
+                const animationImageAsset = this.engine.assetsManager.getAsset(animationImageAssetId);
+                const animation = new Animation(animationImageAsset, renderObject.animation.frameWidth, renderObject.animation.frameRate, renderObject.animation.play, renderObject.animation.direction);
+                renderTarget.setAnimation(animation);
+                this.engine.animationsManager.addAnimation(animation);
               }
               if (renderObject.mirror) {
                 renderTarget.setMirror(renderObject.mirror);

@@ -33,6 +33,19 @@ class Animation {
     }
   }
 
+  start() {
+    this.playing = true;
+  }
+
+  pause() {
+    this.playing = false;
+  }
+
+  stop() {
+    this.playing = false;
+    this.currentFrame = 1;
+  }
+
   setImage(path) {
     this.animationImage.src = path;
   }

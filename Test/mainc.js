@@ -645,12 +645,17 @@ class SceneManager {
               }
               if (renderObject.imagePath) {
                 const imageAssetId = this.engine.assetsManager.addAsset(renderObject.imagePath);
-                await this.engine.assetsManager.loadAssets();
+                await this.engine.assetsManager.loadAsset(imageAssetId);
                 const imageAsset = this.engine.assetsManager.getAsset(imageAssetId);
                 renderTarget.setImage(imageAsset);          
               }
               if (renderObject.animation) {
-                const animation = new Animation()
+                const animationImageAssetId = this.engine.assetsManager.addAsset(renderObject.animation.imagePath);
+                await this.engine.assetsManager.loadAsset(animationImageAssetId);
+                const animationImageAsset = this.engine.assetsManager.getAsset(animationImageAssetId);
+                const animation = new Animation(animationImageAsset, renderObject.animation.frameWidth, renderObject.animation.frameRate, renderObject.animation.play, renderObject.animation.direction);
+                renderTarget.setAnimation(animation);
+                this.engine.animationsManager.addAnimation(animation);
               }
               if (renderObject.mirror) {
                 renderTarget.setMirror(renderObject.mirror);
@@ -678,7 +683,6 @@ const { RenderTarget } = require('../Source/Managers/RenderManager');
   const game = new Engine();
 
   const testObjectFile = game.assetsManager.addAsset('test.yaml');
-  const tavernTableAnimation = game.assetsManager.addAsset('./res/taverntableanim.png');
 
   await game.assetsManager.loadAssets();
 
@@ -689,12 +693,6 @@ const { RenderTarget } = require('../Source/Managers/RenderManager');
   })
 
   game.renderManager.createRenderLayer();
-
-  let anim1 = new Animation(game.assetsManager.getAsset(tavernTableAnimation), rs[0].image.width, 120, true, 'normal');
-
-  game.animationsManager.addAnimation(anim1);
-
-  rs[0].setAnimation(anim1);
 
   game.renderManager.addRenderTarget(rs[0], 0);
   game.renderManager.addRenderTarget(rs[1], 1);
