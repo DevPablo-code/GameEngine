@@ -17,6 +17,7 @@ class Engine {
 
   setup() {
     this.renderManager.setup();
+    this.inputManager.setup();
     this.animationsManager.setup();
   }
 

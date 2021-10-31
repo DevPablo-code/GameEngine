@@ -4,6 +4,9 @@ const { KeyboardEvent, MouseEvent } = require('./EventsManager');
 class InputManager {
   constructor(engine) {
     this.engine = engine; 
+  }
+
+  setup() {
     
     $(this.engine.renderManager.canvas).on('mousedown touchstart', (event) => {
       const canvasRect = event.target.getBoundingClientRect();
@@ -92,6 +95,6 @@ class InputManager {
       this.engine.eventsManager.emit(keyboardEvent);
     })
   }
-}
+} 
 
 module.exports = InputManager;
