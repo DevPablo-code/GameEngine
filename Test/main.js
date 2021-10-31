@@ -1,15 +1,16 @@
 const Engine = require('../Source/Engine');
-const { Animation } = require('../Source/Managers/AnimationsManager');
-const { RenderTarget } = require('../Source/Managers/RenderManager');
+const YAML = require('js-yaml');
 
 ((async () => {
   const game = new Engine();
 
-  const testObjectFile = game.assetsManager.addAsset('test.yaml');
+  const testObjectFileId = game.assetsManager.addAsset('test.yaml');
 
   await game.assetsManager.loadAssets();
 
-  var rs = (await game.sceneManager.buildLevelRender(game.assetsManager.getAsset(testObjectFile)));
+  const renderObjects = YAML.load(game.assetsManager.getAsset(testObjectFileId)).renderObjects;
+
+  var rs = (await game.sceneManager.buildLevelRender(renderObjects));
 
   game.eventsManager.addListener('Window.RenderLayers.Created', (event) => {
     console.log(event);

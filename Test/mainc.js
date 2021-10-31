@@ -73,6 +73,19 @@ class Animation {
     }
   }
 
+  start() {
+    this.playing = true;
+  }
+
+  pause() {
+    this.playing = false;
+  }
+
+  stop() {
+    this.playing = false;
+    this.currentFrame = 1;
+  }
+
   setImage(path) {
     this.animationImage.src = path;
   }
@@ -618,7 +631,6 @@ class RenderManager {
 
 module.exports = { RenderManager, RenderTarget };
 },{"./AnimationsManager":3,"./EventsManager":5}],8:[function(require,module,exports){
-const YAML = require('js-yaml');
 const { Animation } = require('./AnimationsManager');
 const { RenderTarget } = require('./RenderManager')
 
@@ -626,13 +638,12 @@ class SceneManager {
   constructor(engine) {
     this.engine = engine;
   }
-  async buildLevelRender(text) {
+  async buildLevelRender(renderObjects) {
     return new Promise(async (resolve, reject) => {
       try {
-        const parsed = YAML.load(text);
-        if (parsed.renderObjects && Array.isArray(parsed.renderObjects)) {
+        if (renderObjects && Array.isArray(renderObjects)) {
              const renderTargets = [];
-             for (let renderObject of parsed.renderObjects) {
+             for (let renderObject of renderObjects) {
               const renderTarget = new RenderTarget();
               if (renderObject.position) {
                 renderTarget.setPosition(renderObject.position);
@@ -664,7 +675,7 @@ class SceneManager {
              }
              resolve(renderTargets);
         } else {
-          reject('Invalid format. No "renderObjects" key or it isnt array')
+          reject('Invalid format. renderObjects isnt array')
         }
       } catch (err) {
         reject(err);
@@ -674,19 +685,20 @@ class SceneManager {
 }
 
 module.exports = { SceneManager };
-},{"./AnimationsManager":3,"./RenderManager":7,"js-yaml":33}],9:[function(require,module,exports){
+},{"./AnimationsManager":3,"./RenderManager":7}],9:[function(require,module,exports){
 const Engine = require('../Source/Engine');
-const { Animation } = require('../Source/Managers/AnimationsManager');
-const { RenderTarget } = require('../Source/Managers/RenderManager');
+const YAML = require('js-yaml');
 
 ((async () => {
   const game = new Engine();
 
-  const testObjectFile = game.assetsManager.addAsset('test.yaml');
+  const testObjectFileId = game.assetsManager.addAsset('test.yaml');
 
   await game.assetsManager.loadAssets();
 
-  var rs = (await game.sceneManager.buildLevelRender(game.assetsManager.getAsset(testObjectFile)));
+  const renderObjects = YAML.load(game.assetsManager.getAsset(testObjectFileId)).renderObjects;
+
+  var rs = (await game.sceneManager.buildLevelRender(renderObjects));
 
   game.eventsManager.addListener('Window.RenderLayers.Created', (event) => {
     console.log(event);
@@ -703,7 +715,7 @@ const { RenderTarget } = require('../Source/Managers/RenderManager');
     console.log(delta);
   });
 })())
-},{"../Source/Engine":2,"../Source/Managers/AnimationsManager":3,"../Source/Managers/RenderManager":7}],10:[function(require,module,exports){
+},{"../Source/Engine":2,"js-yaml":33}],10:[function(require,module,exports){
 function _arrayLikeToArray(arr, len) {
   if (len == null || len > arr.length) len = arr.length;
 

@@ -1,4 +1,3 @@
-const YAML = require('js-yaml');
 const { Animation } = require('./AnimationsManager');
 const { RenderTarget } = require('./RenderManager')
 
@@ -6,13 +5,12 @@ class SceneManager {
   constructor(engine) {
     this.engine = engine;
   }
-  async buildLevelRender(text) {
+  async buildLevelRender(renderObjects) {
     return new Promise(async (resolve, reject) => {
       try {
-        const parsed = YAML.load(text);
-        if (parsed.renderObjects && Array.isArray(parsed.renderObjects)) {
+        if (renderObjects && Array.isArray(renderObjects)) {
              const renderTargets = [];
-             for (let renderObject of parsed.renderObjects) {
+             for (let renderObject of renderObjects) {
               const renderTarget = new RenderTarget();
               if (renderObject.position) {
                 renderTarget.setPosition(renderObject.position);
@@ -44,7 +42,7 @@ class SceneManager {
              }
              resolve(renderTargets);
         } else {
-          reject('Invalid format. No "renderObjects" key or it isnt array')
+          reject('Invalid format. renderObjects isnt array')
         }
       } catch (err) {
         reject(err);
