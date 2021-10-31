@@ -14,7 +14,7 @@ class Event {
 
 class KeyboardEvent extends Event {
   constructor(action, args) {
-    super('Keyboard', action, args);
+    super('Keyboard', null, action, args);
   }
 }
 
