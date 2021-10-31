@@ -72,7 +72,7 @@ class EventsManager {
   }
 
   emit(event) {
-    const listeners = [...this.getEventListeners(event.category), ...this.getEventListeners(`${event.category}.${event.subcategory}`), ...this.getEventListeners(`${event.category}.${event.subcategory}.${event.action}`)];
+    const listeners = [...this.getEventListeners(event.category), ...this.getEventListeners(`${event.category}.${event.subcategory}`), ...this.getEventListeners(`${event.category}.${event.action}`) , ...this.getEventListeners(`${event.category}.${event.subcategory}.${event.action}`)];
     listeners.forEach((listener) => {
       listener(event);
     })
