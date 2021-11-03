@@ -10,9 +10,10 @@ class InputManager {
     
     $(this.engine.renderManager.canvas).on('mousedown touchstart', (event) => {
       const canvasRect = event.target.getBoundingClientRect();
+      const positionScale = [this.engine.renderManager.canvas.width / canvasRect.width, this.engine.renderManager.canvas.height / canvasRect.height];
       const mouseEvent = new MouseEvent('Button', 'Pressed', {
         button: event.which,
-        position: [event.clientX - canvasRect.left, event.clientY - canvasRect.top],
+        position: [((event.clientX ? event.clientX : event.originalEvent.touches[0].clientX) - canvasRect.left) * positionScale[0], ((event.clientY ? event.clientY : event.originalEvent.touches[0].clientY) - canvasRect.top) * positionScale[1]],
         ctrlKey: event.ctrlKey,
         metaKey: event.metaKey,
         altKey: event.altKey,
@@ -22,9 +23,10 @@ class InputManager {
 
     $(this.engine.renderManager.canvas).on('mouseup touchend', (event) => {
       const canvasRect = event.target.getBoundingClientRect();
+      const positionScale = [this.engine.renderManager.canvas.width / canvasRect.width, this.engine.renderManager.canvas.height / canvasRect.height];
       const mouseEvent = new MouseEvent('Button', 'Released', {
         button: event.which,
-        position: [event.clientX - canvasRect.left, event.clientY - canvasRect.top],
+        position: [((event.clientX ? event.clientX : event.originalEvent.touches[0].clientX) - canvasRect.left) * positionScale[0], ((event.clientY ? event.clientY : event.originalEvent.touches[0].clientY) - canvasRect.top) * positionScale[1]],
         ctrlKey: event.ctrlKey,
         metaKey: event.metaKey,
         altKey: event.altKey,
@@ -34,10 +36,11 @@ class InputManager {
 
     $(this.engine.renderManager.canvas).on('wheel', (event) => {
       const canvasRect = event.target.getBoundingClientRect();
+      const positionScale = [this.engine.renderManager.canvas.width / canvasRect.width, this.engine.renderManager.canvas.height / canvasRect.height];
       let subcategory = 'Wheel';
       let action;
       let args = {
-        position: [event.clientX - canvasRect.left, event.clientY - canvasRect.top],
+        position: [((event.clientX ? event.clientX : event.originalEvent.touches[0].clientX) - canvasRect.left) * positionScale[0], ((event.clientY ? event.clientY : event.originalEvent.touches[0].clientY) - canvasRect.top) * positionScale[1]],
         delta: [event.originalEvent.deltaX, event.originalEvent.deltaY],
         ctrlKey: event.ctrlKey,
         metaKey: event.metaKey,
@@ -63,8 +66,9 @@ class InputManager {
 
     $(this.engine.renderManager.canvas).on('mousemove touchmove', (event) => {
       const canvasRect = event.target.getBoundingClientRect();
+      const positionScale = [this.engine.renderManager.canvas.width / canvasRect.width, this.engine.renderManager.canvas.height / canvasRect.height];
       const mouseEvent = new MouseEvent('Cursor', 'Move', {
-        position: [event.clientX - canvasRect.left, event.clientY - canvasRect.top],
+        position: [((event.clientX ? event.clientX : event.originalEvent.touches[0].clientX) - canvasRect.left) * positionScale[0], ((event.clientY ? event.clientY : event.originalEvent.touches[0].clientY) - canvasRect.top) * positionScale[1]],
         delta: [event.originalEvent.movementX, event.originalEvent.movementY],
         ctrlKey: event.ctrlKey,
         metaKey: event.metaKey,
