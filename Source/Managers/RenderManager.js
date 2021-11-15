@@ -55,7 +55,7 @@ class RenderManager {
   constructor(engine) {
     this.engine = engine;
   }
-  
+
   setup() {
     this.canvas = document.createElement('canvas');
     this.canvas.width = document.documentElement.clientWidth;
@@ -75,58 +75,52 @@ class RenderManager {
     }
   }
 
-  draw(target) {
-    this.context.save();
-
+  getRenderInfo(target) {
+    let image, x, y, w, h, offsetX, offsetY, areaW, areaH;
     if (target.animation.playing) {
-      let w = target.animation.frameWidth * target.size[0];
-      let h = target.animation.animationImage.height * target.size[1];
-      let x = target.position[0] - w / 2;
-      let y = target.position[1] - h / 2;
-      let scaleX = 1;
-      let scaleY = 1;
-      if (target.mirror[0] == 1) {
-        scaleX = -1;
-        x = -(x + w);
-      }
-      if (target.mirror[1] == 1) {
-        scaleY = -1;
-        y = -(y + h);
-      }
-      this.context.scale(scaleX, scaleY);
-
-      this.context.translate(x + w / 2, y + h / 2);
-      this.context.rotate(target.rotation * Math.PI / 180);
-      this.context.translate(-x - w / 2, -y - h / 2);
-
-      this.context.drawImage(target.animation.animationImage, target.animation.frameWidth * (target.animation.currentFrame - 1), 0, target.animation.frameWidth, target.animation.animationImage.height, x ,y , w, h);
+      image = target.animation.animationImage;
+      w = target.animation.frameWidth * target.size[0];
+      h = target.animation.animationImage.height * target.size[1];
+      areaW = target.animation.frameWidth;
+      areaH = target.animation.animationImage.height
+      offsetX = target.animation.frameWidth * (target.animation.currentFrame - 1);
+      offsetY = 0;
     } else {
-      let w = target.image.width * target.size[0];
-      let h = target.image.height * target.size[1];
-      let x = target.position[0] - w / 2;
-      let y = target.position[1] - h / 2;
-      let scaleX = 1;
-      let scaleY = 1;
-      if (target.mirror[0] == 1) {
-        scaleX = -1;
-        x = -(x + w);
-      }
-      if (target.mirror[1] == 1) {
-        scaleY = -1;
-        y = -(y + h);
-      }
-      this.context.scale(scaleX, scaleY);
-  
-      this.context.translate(x + w / 2, y + h / 2);
-      this.context.rotate(target.rotation * Math.PI / 180);
-      this.context.translate(-x - w / 2, -y - h / 2);
-  
-      this.context.drawImage(target.image, 
-                             x, y, //Move local coordinates to image center
-                             w, h);
+      image = target.image;
+      w = target.image.width * target.size[0];
+      h = target.image.height * target.size[1];
+      areaW = target.image.width;
+      areaH = target.image.height;
+      offsetX = 0;
+      offsetY = 0;
     }
+    x = target.position[0] - w / 2;
+    y = target.position[1] - h / 2;
 
-    this.context.restore();
+    return [image, x, y, w, h, offsetX, offsetY, areaW, areaH];
+  }
+
+  draw(target, context = this.context, [image, x, y, w, h, offsetX, offsetY, areaW, areaH] = this.getRenderInfo(target)) {
+    context.save();
+    let scaleX = 1;
+    let scaleY = 1;
+    if (target.mirror[0] == 1) {
+      scaleX = -1;
+      x = -(x + w);
+    }
+    if (target.mirror[1] == 1) {
+      scaleY = -1;
+      y = -(y + h);
+    }
+    context.scale(scaleX, scaleY);
+
+    context.translate(x + w / 2, y + h / 2);
+    context.rotate(target.rotation * Math.PI / 180);
+    context.translate(-x - w / 2, -y - h / 2);
+
+    context.drawImage(image, offsetX, offsetY, areaW, areaH, x, y, w, h);
+
+    context.restore();
   }
 
   setCanvasSize(width, height) {
@@ -156,7 +150,9 @@ class RenderManager {
   removeRenderTarget(target, layer = 0) {
     const layerObjects = this.renderTargets.get(layer);
     const objectIndex = layerObjects.indexOf(target);
-    layerObjects.splice(objectIndex, 1);
+    if (objectIndex != -1) {
+      layerObjects.splice(objectIndex, 1);
+    }
   }
 
   createRenderLayer() {

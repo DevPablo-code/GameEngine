@@ -20,6 +20,7 @@ class Engine {
 
   setup() {
     this.renderManager.setup();
+    this.inputManager.setup();
     this.animationsManager.setup();
   }
 
@@ -290,7 +291,7 @@ class Event {
 
 class KeyboardEvent extends Event {
   constructor(action, args) {
-    super('Keyboard', action, args);
+    super('Keyboard', null, action, args);
   }
 }
 
@@ -348,7 +349,7 @@ class EventsManager {
   }
 
   emit(event) {
-    const listeners = [...this.getEventListeners(event.category), ...this.getEventListeners(`${event.category}.${event.subcategory}`), ...this.getEventListeners(`${event.category}.${event.subcategory}.${event.action}`)];
+    const listeners = [...this.getEventListeners(event.category), ...this.getEventListeners(`${event.category}.${event.subcategory}`), ...this.getEventListeners(`${event.category}.${event.action}`) , ...this.getEventListeners(`${event.category}.${event.subcategory}.${event.action}`)];
     listeners.forEach((listener) => {
       listener(event);
     })
@@ -363,12 +364,16 @@ const { KeyboardEvent, MouseEvent } = require('./EventsManager');
 class InputManager {
   constructor(engine) {
     this.engine = engine; 
+  }
+
+  setup() {
     
     $(this.engine.renderManager.canvas).on('mousedown touchstart', (event) => {
       const canvasRect = event.target.getBoundingClientRect();
+      const positionScale = [this.engine.renderManager.canvas.width / canvasRect.width, this.engine.renderManager.canvas.height / canvasRect.height];
       const mouseEvent = new MouseEvent('Button', 'Pressed', {
         button: event.which,
-        position: [event.clientX - canvasRect.left, event.clientY - canvasRect.top],
+        position: [((event.clientX ? event.clientX : event.originalEvent.touches[0].clientX) - canvasRect.left) * positionScale[0], ((event.clientY ? event.clientY : event.originalEvent.touches[0].clientY) - canvasRect.top) * positionScale[1]],
         ctrlKey: event.ctrlKey,
         metaKey: event.metaKey,
         altKey: event.altKey,
@@ -378,9 +383,10 @@ class InputManager {
 
     $(this.engine.renderManager.canvas).on('mouseup touchend', (event) => {
       const canvasRect = event.target.getBoundingClientRect();
+      const positionScale = [this.engine.renderManager.canvas.width / canvasRect.width, this.engine.renderManager.canvas.height / canvasRect.height];
       const mouseEvent = new MouseEvent('Button', 'Released', {
         button: event.which,
-        position: [event.clientX - canvasRect.left, event.clientY - canvasRect.top],
+        position: [((event.clientX ? event.clientX : event.originalEvent.touches[0].clientX) - canvasRect.left) * positionScale[0], ((event.clientY ? event.clientY : event.originalEvent.touches[0].clientY) - canvasRect.top) * positionScale[1]],
         ctrlKey: event.ctrlKey,
         metaKey: event.metaKey,
         altKey: event.altKey,
@@ -390,10 +396,11 @@ class InputManager {
 
     $(this.engine.renderManager.canvas).on('wheel', (event) => {
       const canvasRect = event.target.getBoundingClientRect();
+      const positionScale = [this.engine.renderManager.canvas.width / canvasRect.width, this.engine.renderManager.canvas.height / canvasRect.height];
       let subcategory = 'Wheel';
       let action;
       let args = {
-        position: [event.clientX - canvasRect.left, event.clientY - canvasRect.top],
+        position: [((event.clientX ? event.clientX : event.originalEvent.touches[0].clientX) - canvasRect.left) * positionScale[0], ((event.clientY ? event.clientY : event.originalEvent.touches[0].clientY) - canvasRect.top) * positionScale[1]],
         delta: [event.originalEvent.deltaX, event.originalEvent.deltaY],
         ctrlKey: event.ctrlKey,
         metaKey: event.metaKey,
@@ -419,8 +426,9 @@ class InputManager {
 
     $(this.engine.renderManager.canvas).on('mousemove touchmove', (event) => {
       const canvasRect = event.target.getBoundingClientRect();
+      const positionScale = [this.engine.renderManager.canvas.width / canvasRect.width, this.engine.renderManager.canvas.height / canvasRect.height];
       const mouseEvent = new MouseEvent('Cursor', 'Move', {
-        position: [event.clientX - canvasRect.left, event.clientY - canvasRect.top],
+        position: [((event.clientX ? event.clientX : event.originalEvent.touches[0].clientX) - canvasRect.left) * positionScale[0], ((event.clientY ? event.clientY : event.originalEvent.touches[0].clientY) - canvasRect.top) * positionScale[1]],
         delta: [event.originalEvent.movementX, event.originalEvent.movementY],
         ctrlKey: event.ctrlKey,
         metaKey: event.metaKey,
@@ -451,7 +459,7 @@ class InputManager {
       this.engine.eventsManager.emit(keyboardEvent);
     })
   }
-}
+} 
 
 module.exports = InputManager;
 },{"./EventsManager":5,"jquery":32}],7:[function(require,module,exports){
@@ -502,6 +510,31 @@ class RenderTarget {
   setMirror(mirror) {
     this.mirror = mirror;
   }
+
+  getRenderInfo() {
+    let image, x, y, w, h, offsetX, offsetY, areaW, areaH;
+    if (this.animation.playing) {
+      image = this.animation.animationImage;
+      w = this.animation.frameWidth * this.size[0];
+      h = this.animation.animationImage.height * this.size[1];
+      areaW = this.animation.frameWidth;
+      areaH = this.animation.animationImage.height
+      offsetX = this.animation.frameWidth * (this.animation.currentFrame - 1);
+      offsetY = 0;
+    } else {
+      image = this.image;
+      w = this.image.width * this.size[0];
+      h = this.image.height * this.size[1];
+      areaW = this.image.width;
+      areaH = this.image.height;
+      offsetX = 0;
+      offsetY = 0;
+    }
+    x = this.position[0] - w / 2;
+    y = this.position[1] - h / 2;
+
+    return [image, x, y, w, h, offsetX, offsetY, areaW, areaH];
+  }
 }
 
 class RenderManager {
@@ -512,7 +545,7 @@ class RenderManager {
   constructor(engine) {
     this.engine = engine;
   }
-  
+
   setup() {
     this.canvas = document.createElement('canvas');
     this.canvas.width = document.documentElement.clientWidth;
@@ -534,54 +567,24 @@ class RenderManager {
 
   draw(target) {
     this.context.save();
-
-    if (target.animation.playing) {
-      let w = target.animation.frameWidth * target.size[0];
-      let h = target.animation.animationImage.height * target.size[1];
-      let x = target.position[0] - w / 2;
-      let y = target.position[1] - h / 2;
-      let scaleX = 1;
-      let scaleY = 1;
-      if (target.mirror[0] == 1) {
-        scaleX = -1;
-        x = -(x + w);
-      }
-      if (target.mirror[1] == 1) {
-        scaleY = -1;
-        y = -(y + h);
-      }
-      this.context.scale(scaleX, scaleY);
-
-      this.context.translate(x + w / 2, y + h / 2);
-      this.context.rotate(target.rotation * Math.PI / 180);
-      this.context.translate(-x - w / 2, -y - h / 2);
-
-      this.context.drawImage(target.animation.animationImage, target.animation.frameWidth * (target.animation.currentFrame - 1), 0, target.animation.frameWidth, target.animation.animationImage.height, x ,y , w, h);
-    } else {
-      let w = target.image.width * target.size[0];
-      let h = target.image.height * target.size[1];
-      let x = target.position[0] - w / 2;
-      let y = target.position[1] - h / 2;
-      let scaleX = 1;
-      let scaleY = 1;
-      if (target.mirror[0] == 1) {
-        scaleX = -1;
-        x = -(x + w);
-      }
-      if (target.mirror[1] == 1) {
-        scaleY = -1;
-        y = -(y + h);
-      }
-      this.context.scale(scaleX, scaleY);
-  
-      this.context.translate(x + w / 2, y + h / 2);
-      this.context.rotate(target.rotation * Math.PI / 180);
-      this.context.translate(-x - w / 2, -y - h / 2);
-  
-      this.context.drawImage(target.image, 
-                             x, y, //Move local coordinates to image center
-                             w, h);
+    let [image, x, y, w, h, offsetX, offsetY, areaW, areaH] = target.getRenderInfo();
+    let scaleX = 1;
+    let scaleY = 1;
+    if (target.mirror[0] == 1) {
+      scaleX = -1;
+      x = -(x + w);
     }
+    if (target.mirror[1] == 1) {
+      scaleY = -1;
+      y = -(y + h);
+    }
+    this.context.scale(scaleX, scaleY);
+
+    this.context.translate(x + w / 2, y + h / 2);
+    this.context.rotate(target.rotation * Math.PI / 180);
+    this.context.translate(-x - w / 2, -y - h / 2);
+
+    this.context.drawImage(image, offsetX, offsetY, areaW, areaH, x, y, w, h);
 
     this.context.restore();
   }
